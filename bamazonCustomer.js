@@ -42,7 +42,6 @@ function startFunction() {
 
         var startID = results[0].id;
         var endID = results[results.length-1].id;
-        
 
         inquirer.prompt({
             name: "item",
@@ -67,15 +66,15 @@ function startFunction() {
         })
         .then(function(answer) {
 
-            var selectedItem = results.find( item => {
+            var selectedProduct = results.find( item => {
                 return item.id == answer.item;
             });
             console.log("******************************************");
-            console.log("selected item name: " + selectedItem.product_name +
-            "\nitem ID: " + selectedItem.id);
+            console.log("selected item name: " + selectedProduct.product_name +
+            "\nitem ID: " + selectedProduct.id);
             console.log("******************************************");
             
-
+            var inStock = selectedProduct.stock_quantity;
 
 
         }
