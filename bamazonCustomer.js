@@ -43,7 +43,8 @@ function startFunction() {
         var startID = results[0].id;
         var endID = results[results.length-1].id;
 
-        inquirer.prompt({
+        inquirer.prompt([
+            {
             name: "item",
             type: "input",
             message: "What is the ID of the product you would like to buy?",
@@ -57,13 +58,14 @@ function startFunction() {
             }
         },
         {
-            name: "units",
+            name: "quantity",
             type: "input",
             message: "How many units of the product would you like to buy?",
             validate: function(qty) {
                 return (!isNaN(parseInt(qty)) && qty>0)
             }
-        })
+        }
+    ])
         .then(function(answer) {
 
             var selectedProduct = results.find( item => {
@@ -76,10 +78,43 @@ function startFunction() {
             
             var inStock = selectedProduct.stock_quantity;
 
+            if (inStock >= answer.quantity) {
 
-        }
-        
-          )
+
+                inStock -= parseInt(answer.quantity);
+
+                var totalPrice = selectedProduct.price * parseInt(answer.quantity);
+
+                connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: inStock
+                        },
+
+                        {
+                            id:  answer.item
+                        }
+                    ],
+                    function (err, res) {
+                        if(err) throw err;
+                        console.log("******************************************");
+                        console.log(res.affectedRows + " product updated!");
+                        console.log("There are " + inStock + " of these items left in Stock!")
+                        console.log("******************************************");
+                        console.log("Total Purchase Price: $" + totalPrice);
+                        console.log("******************************************");
+
+                        connection.end()
+                    }  
+                  )
+            } else {
+                console.log("Insufficient Quantity!");
+                connection.end();
+            }
+        }).catch(function(err) {
+            console.log(err);
+        } )
 
 
     
