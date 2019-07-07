@@ -83,7 +83,7 @@ function startFunction() {
 
                 inStock -= parseInt(answer.quantity);
 
-                var totalPrice = selectedProduct.price * parseInt(answer.quantity);
+                var totalPrice = selectedProduct.price * parseInt(answer.quantity) ;
 
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
